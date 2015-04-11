@@ -45,21 +45,30 @@
  					<img src="img/radio.png">
  				</div>
  				<div class="col-md-6">
-						   <form action="/send" method="post">
+                <label for="sala">Seleccione la radio a modificar:</label>
+                <select class="form-control" id="sala" data-style="btn-success" >
+                    <option> </option>
+                </select>
+                <p id="demo"></p>
+                <br>
+						   <form action="/updatetoDB" method="post">
+                 <div class="form-group">
+                      <input type="hidden" class="form-control" id="id2" placeholder="ID" name="radio[id]">
+                 </div>
 							   	 <div class="form-group">
-									    <label for="nombreRadio">Nombre Radio</label>
-									    <input type="email" class="form-control" id="nombreRadio" placeholder="Nombre">
+									    <label for="nombreRadio2">Nombre Radio</label>
+									    <input type="text" class="form-control" id="nombreRadio2" placeholder="Nombre" name="radio[nombre]" required>
 								 </div>
 								 <div class="form-group">
 									    <label for="dirRadio">Dirección Radio</label>
-									    <input type="email" class="form-control" id="dirRadio" placeholder="Dirección ip">
+									    <input type="text" class="form-control" id="dirRadio2" placeholder="Dirección ip" name="radio[ip]"required>
 								 </div>
 								 <div class="form-group">
-									    <label for="numPar"> Número maximo de participantes</label>
-									    <input type="email" class="form-control" id="numPar" placeholder="Participantes">
+									    <label for="numPar2"> Número maximo de participantes</label>
+									    <input type="text" class="form-control" id="numPar2" placeholder="Participantes" name="radio[numPar]"required>
 								 </div>
 
-						  		<button id="enviar2" name="send" type="submit" class="btn btn-info btn-lg btn-block">Ingresar la radio!</button>
+						  		<button id="enviar2" name="send" type="submit" class="btn btn-info btn-lg btn-block">Modificar la radio!</button>
 						  </form>
 
  				</div>
@@ -69,6 +78,20 @@
  	</div>
   </body>
 <script src="/socket.io/socket.io.js"></script>
+
+<script type="text/javascript">
+
+     /* 
+      onchange="updateData()"
+      function updateData() {
+        var x = document.getElementById("sala").value;
+        document.getElementById("demo").innerHTML = "You selected: " + x;
+
+      }*/
+
+    
+</script>
+
 
 </html>
 

@@ -78,6 +78,31 @@ app.post('/deleteToDB', function(req, res){
 	
 	 res.redirect('/');
 });
+app.post('/updatetoDB', function(req, res){
+	var post_data = req.body;
+	  var id = post_data["radio[id]"];
+	  var nombre = post_data["radio[nombre]"];
+	  var ip = post_data["radio[ip]"];
+	  var numPar= post_data["radio[numPar]"]; 
+	var collec = ['radios'];
+	var db = require("mongojs").connect(databaseUrl, collec);
+	var collection = db.collection('radios');
+
+	db.radios.update({_id:ObjectID(id)},
+			{"nombre": nombre , 
+			"dirección" : ip,
+			"maxUsers": numPar,
+			"actualUser": 0},
+			 { upsert: true },
+			 function(err, updated){
+	        if( err || !updated ) console.log("No se ha podido guardar la radio");
+		  	else console.log("Radio modificada con éxito");
+    // the update is complete
+	});
+
+	res.redirect('/');
+});
+
 //server.listen("8000", "127.0.0.1"); 
 //console.log('Server running at http://127.0.0.1:8000'); 
 
@@ -98,6 +123,23 @@ io.sockets.on('connection', function (socket) { // conexion
 	socket.on('initRoom', function (data) {
 		console.log("Entro al chat");
 		socket.join();
+	});
+
+	socket.on('actualizaModificar', function (data){
+			  var id = data.text;
+			  var collec = ['radios'];
+			  var db = require("mongojs").connect(databaseUrl, collec);
+			  var collection = db.collection('radios');
+			  db.radios.find({_id : ObjectID(id)},function(err, docs) {
+				// docs is an array of all the documents in mycollection
+					for (var i = 0; i < docs.length; i++) {
+						socket.emit('actualizarFormulario', docs[i]);
+						//
+
+					};
+
+			  });	
+			  
 	});
 
 	/*socket.on('agregar', function (data) {

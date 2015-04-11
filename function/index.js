@@ -48,6 +48,14 @@ try {
 	
 		$('#sala').append('<option value="'+ data["_id"]+'">'+ data["nombre"]+'</option>');
 	});
+
+	socket.on('actualizarFormulario', function (data){
+		$('#id2').val(data["_id"]);
+		$('#nombreRadio2').val(data["nombre"]);
+		$('#dirRadio2').val(data["dirección"]);
+		$('#numPar2').val(data["maxUsers"]);	
+	});
+	
 }
 catch (err) {
 	alert('No está disponible el servidor Node.js');
@@ -82,8 +90,17 @@ $(function() {
 	});		*/		
 });
 
+
+
+
 $(document).ready(function(){
 	$('#enviar').click(function () {
 		socket.emit('initRoom', { });
+	});
+
+
+	$('#sala').change(function () {
+	    var x = document.getElementById("sala").value;
+		socket.emit('actualizaModificar', { text: x });
 	});
 });
