@@ -168,11 +168,12 @@ io.sockets.on('connection', function (socket) { // conexion
 		if(socket.username) {
 			console.log("Usuario desconectado " + socket.username);
 			socket.leave();
-			var messaje = socket.username+ " ha salido a la sala de chat.";
+			var res =socket.username.split("#$%&");
+			var messaje = res[0]+ " ha salido a la sala de chat.";
 			var byeUser = usuariosOnline.indexOf(socket.username);
 			byeUser > -1 && usuariosOnline.splice( byeUser, 1 );
 
-			socket.broadcast.emit('salidaUsuario', { text:messaje});
+			socket.broadcast.emit('salidaUsuario', { text:messaje, room: res[1]});
 			socket.broadcast.emit('updateUsers', usuariosOnline);
 		}
 		else socket.leave();
@@ -180,27 +181,8 @@ io.sockets.on('connection', function (socket) { // conexion
 	});
 		
 	socket.on('ingresoUser', function (data) {
-		socket.username = data.text;
-	/*	var num;
-		var esta= false;
-
-		for (var i = 0; i < usuariosOnline.length; i++) {
-			for (var j = 0; j < usuariosOnline[i].length; j++) {
-				console.log(usuariosOnline[i][j])
-			};
-
-		};	
-
-		for (var i = 0; i < usuariosOnline.length; i++) {
-			if (usuariosOnline[i]== data.room) {
-				num= i;
-				esta = true;
-			};
-			
-		};
-		if(esta){*/
+		socket.username = data.text +"#$%&" + data.room;
 		usuariosOnline.push(data.text +"#$%&" + data.room);
-		
 		console.log("Ingreso el usuario: " + data.text);
 		var messaje = data.text+ " ha ingresado a la sala de chat ";
 		socket.broadcast.emit('ingresoUsuario', { text:messaje, room: data.room});

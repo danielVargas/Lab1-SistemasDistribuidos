@@ -41,7 +41,7 @@ try {
 	
 	});
 	socket.on('salidaUsuario', function (data) {
-		$('#chat').append('<div class=" alert-danger">' + data.text + '</div>');
+		if($("#tittleRoom").html()==data.room)$('#chat').append('<div class=" alert-danger">' + data.text + '</div>');
 	
 	});
 
