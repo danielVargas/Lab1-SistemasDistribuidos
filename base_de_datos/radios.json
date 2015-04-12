@@ -1,0 +1,3 @@
+{"_id":{"$oid":"5523255e93b26f6baadd8741"},"actualUser":0,"dirección":"http://127.0.0.1:8088/","maxUsers":"5","nombre":"Radio 1"}
+{"_id":{"$oid":"55282c439bdfccc014b98d13"},"actualUser":"0","dirección":"http://127.0.0.1:9088/","maxUsers":"5","nombre":"Radio 2"}
+{"_id":{"$oid":"55288489a5c553641aa2f436"},"actualUser":"0","dirección":"http://127.0.0.1:7088/","maxUsers":"10","nombre":"Radio 3"}
