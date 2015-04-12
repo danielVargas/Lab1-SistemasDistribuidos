@@ -31,7 +31,7 @@ app.get('/', function (req, res) {
 
 
 app.post('/send', function(req, res){
-	console.log('Send Post');
+	  
 	res.sendfile(__dirname + "/view/index.html");
 });
 app.post('/agregar', function(req, res){
@@ -124,7 +124,22 @@ io.sockets.on('connection', function (socket) { // conexion
 		console.log("Entro al chat");
 		socket.join();
 	});
+	socket.on('actualizarRadio', function (data){
+	  var id = data.text;
+	  var collec = ['radios'];
+	  var db = require("mongojs").connect(databaseUrl, collec);
+	  var collection = db.collection('radios');
+	  db.radios.find({_id : ObjectID(id)},function(err, docs) {
+		// docs is an array of all the documents in mycollection
+			for (var i = 0; i < docs.length; i++) {
+				socket.broadcast.emit('emitirRadio', docs[i]);
+				//
 
+			};
+
+	  });
+	});
+	
 	socket.on('actualizaModificar', function (data){
 			  var id = data.text;
 			  var collec = ['radios'];
@@ -173,7 +188,7 @@ io.sockets.on('connection', function (socket) { // conexion
 
 	socket.on('ingresoSala', function (data) {
 	
-		socket.emit('enterRoom', { text:data.text});
+		socket.broadcast.emit('enterRoom', { text:data.text});
 	});
 
 	socket.on('broadcast', function (data) {

@@ -43,8 +43,8 @@
         <div class="cover-container well" >
           <div class="inner cover">
             <script type="text/javascript">//http://firewall.pulsradio.com</script>
-            <audio controls src="http://127.0.0.1:8088/" id ="radioRep" type="audio/mpeg"></audio>
-            <h1 class="cover-heading btn btn-primary btn-lg btn-block" id="tittleRoom">Sala: 
+                       <div id="contenedorRadio"></div>
+            <h1 class="cover-heading btn btn-primary btn-lg btn-block">Sala: <p  id="tittleRoom"></p> 
             </h1>
                 <br>        
                   <div class="row">
@@ -78,8 +78,15 @@
             <input type="text" class="form-control" id="nombreUsuario" placeholder="Su nombre es...">
             <br>
           </div>
+           
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnEntrar">Entrar</button>
+            <div class="alert-success well">Seleccione una radio</div>
+     
+                <select class="form-control" id="sala2" data-style="btn-success" name="seleccion">
+                </select>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnEntrar">Entrar</button>
+              
+            
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->

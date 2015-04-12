@@ -27,7 +27,7 @@ try {
 
 	socket.on('enterRoom', function (data) {
 		
-		$('#tittleRoom').append(data.text);
+		if($("#tittleRoom").html()=="")$('#tittleRoom').append(data.text);
 	
 	});
 
@@ -45,15 +45,23 @@ try {
 	
 	});
 	socket.on('cargarRadios', function (data){
-	
+		
 		$('#sala').append('<option value="'+ data["_id"]+'">'+ data["nombre"]+'</option>');
+		$('#sala2').append('<option value="'+ data["_id"]+'">'+ data["nombre"]+'</option>');
+	});
+
+	socket.on('emitirRadio', function (data){
+
+
+		if($("#contenedorRadio").html()=="") $('#contenedorRadio').append('<audio controls src="'+ data['dirección']+'" id ="radioRep" type="audio/mpeg"></audio>');
 	});
 
 	socket.on('actualizarFormulario', function (data){
 		$('#id2').val(data["_id"]);
 		$('#nombreRadio2').val(data["nombre"]);
 		$('#dirRadio2').val(data["dirección"]);
-		$('#numPar2').val(data["maxUsers"]);	
+		$('#numPar2').val(data["maxUsers"]);
+
 	});
 	
 }
@@ -66,10 +74,13 @@ $(function() {
 
 	$('#btnEntrar').click(function() {
 		var message = $('#nombreUsuario').val();
-		var mesaageSala = $('#sala').val();
 		if(message == ''){message = 'Anónimo';}
 		usuario= message;
-		socket.emit('ingresoSala', {text:mesaageSala});
+		var valor = $("#sala2 option:selected").html();
+		var x = document.getElementById("sala2").value;
+		socket.emit('actualizarRadio', { text: x });
+
+		socket.emit('ingresoSala', {text:valor});
 		socket.emit('ingresoUser', {text: message});
 	});
 
@@ -78,16 +89,7 @@ $(function() {
 		$('#text-send').val('');
 	
 		socket.emit('broadcast', {text: message});
-	});
-	/*$('#addBtn').click(function() {
-		socket.emit('agregar', { });;
-	});*/
-/*	$('#modBtn').click(function() {
-		alert("modificando!");
-	});		
-	$('#delBtn').click(function() {
-		alert("eliminando");
-	});		*/		
+	});	
 });
 
 
@@ -95,6 +97,7 @@ $(function() {
 
 $(document).ready(function(){
 	$('#enviar').click(function () {
+
 		socket.emit('initRoom', { });
 	});
 
@@ -102,5 +105,8 @@ $(document).ready(function(){
 	$('#sala').change(function () {
 	    var x = document.getElementById("sala").value;
 		socket.emit('actualizaModificar', { text: x });
+
+		
 	});
+
 });
