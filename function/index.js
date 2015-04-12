@@ -2,7 +2,7 @@
 var serverIP = 'localhost';
 var port = 3000;
 var users = new Array();
-
+var room = "";
 try {
 	socket = io.connect(serverIP+':'+port+'/'); //Conexion con Socket.io
 
@@ -12,14 +12,19 @@ try {
 	socket.on("updateUsers", function (data)
     {
         //limpiamos el sidebar donde almacenamos usuarios
-       $("#users").html("");
-       $("#users").append('<div class="alert alert-info" id="users">Usuarios conectados: <br></div>');
+
+      
        
-       for(i =0; i< data.length; i++){
-       		$('#users').append('<i style="color: #5CB85C;"class="glyphicon glyphicon-user"></i>' +' '+ data[i]+ ' </br>');
-       }
        
    
+       			$("#users").html("");
+       			$("#users").append('<div class="alert alert-info" id="users">Usuarios conectados: <br></div>');
+       			for (var i = 0 ; i < data.length; i++) {
+       				var res = data[i].split("#$%&");
+       				if($("#tittleRoom").html()==res[1])
+       				$('#users').append('<i style="color: #5CB85C;"class="glyphicon glyphicon-user"></i>' +' '+ res[0]+ ' </br>');
+       				}
+    
         
         //si hay usuarios conectados, para evitar errores
  
@@ -32,7 +37,7 @@ try {
 	});
 
 	socket.on('ingresoUsuario', function (data) {
-		$('#chat').append('<div class=" alert-success">' + data.text + '</div>');
+		if($("#tittleRoom").html()==data.room)$('#chat').append('<div class=" alert-success">' + data.text + data.room + '</div>');
 	
 	});
 	socket.on('salidaUsuario', function (data) {
@@ -41,7 +46,8 @@ try {
 	});
 
 	socket.on('broadcastCallback', function (data) {
-		$('#chat').append('<div class=" alert-info">' + data.text + '</div>');
+
+		if($("#tittleRoom").html()==data.room)$('#chat').append('<div class=" alert-info">' + data.text + '</div>');
 	
 	});
 	socket.on('cargarRadios', function (data){
@@ -78,17 +84,19 @@ $(function() {
 		usuario= message;
 		var valor = $("#sala2 option:selected").html();
 		var x = document.getElementById("sala2").value;
+		room = valor;
+		socket.emit('initRoom', {room : room});
 		socket.emit('actualizarRadio', { text: x });
-
 		socket.emit('ingresoSala', {text:valor});
-		socket.emit('ingresoUser', {text: message});
+		socket.emit('ingresoUser', {text: message, room:room});
 	});
 
 	$('#btn-send').click(function() {
 		var message =  usuario+ ": "+$('#text-send').val();
 		$('#text-send').val('');
-	
-		socket.emit('broadcast', {text: message});
+		var valor = $("#sala2 option:selected").html();
+		room = valor
+		socket.emit('broadcast', {text: message, room : room});
 	});	
 });
 
@@ -96,11 +104,11 @@ $(function() {
 
 
 $(document).ready(function(){
-	$('#enviar').click(function () {
+/*	$('#enviar').click(function () {
 
-		socket.emit('initRoom', { });
+		
 	});
-
+*/
 
 	$('#sala').change(function () {
 	    var x = document.getElementById("sala").value;

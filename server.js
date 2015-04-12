@@ -10,7 +10,7 @@ var port = 3000;
 server.listen(port);
 var databaseUrl = "radios";
 
-var usuariosOnline = new Array();
+var usuariosOnline = new Array();;
 console.log('Start Web Services NodeJS in Port ' + port);
 
 
@@ -119,10 +119,12 @@ io.sockets.on('connection', function (socket) { // conexion
 
 		};
 
-	});		
+
+	});
+		
 	socket.on('initRoom', function (data) {
 		console.log("Entro al chat");
-		socket.join();
+		socket.join(data.room);
 	});
 	socket.on('actualizarRadio', function (data){
 	  var id = data.text;
@@ -179,10 +181,29 @@ io.sockets.on('connection', function (socket) { // conexion
 		
 	socket.on('ingresoUser', function (data) {
 		socket.username = data.text;
-		usuariosOnline.push(data.text);
+	/*	var num;
+		var esta= false;
+
+		for (var i = 0; i < usuariosOnline.length; i++) {
+			for (var j = 0; j < usuariosOnline[i].length; j++) {
+				console.log(usuariosOnline[i][j])
+			};
+
+		};	
+
+		for (var i = 0; i < usuariosOnline.length; i++) {
+			if (usuariosOnline[i]== data.room) {
+				num= i;
+				esta = true;
+			};
+			
+		};
+		if(esta){*/
+		usuariosOnline.push(data.text +"#$%&" + data.room);
+		
 		console.log("Ingreso el usuario: " + data.text);
-		var messaje = data.text+ " ha ingresado a la sala de chat.";
-		socket.broadcast.emit('ingresoUsuario', { text:messaje});
+		var messaje = data.text+ " ha ingresado a la sala de chat ";
+		socket.broadcast.emit('ingresoUsuario', { text:messaje, room: data.room});
 		socket.broadcast.emit('updateUsers', usuariosOnline);
 	});
 
@@ -193,7 +214,7 @@ io.sockets.on('connection', function (socket) { // conexion
 
 	socket.on('broadcast', function (data) {
 		console.log("Un usuario envió el mensaje: " + data.text);
-		socket.broadcast.emit('broadcastCallback', { text:data.text});
+		socket.broadcast.emit('broadcastCallback', { text:data.text, room: data.room});
 	});
 });
 
