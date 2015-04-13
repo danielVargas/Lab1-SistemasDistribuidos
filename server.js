@@ -6,6 +6,11 @@ var express = require('express')
 var bodyParser = require('body-parser');
 var ObjectID = require("mongodb").ObjectID;
 
+var coneccion;
+var domain = require('domain');
+var d = domain.create();
+
+
 var port = 3000;
 server.listen(port);
 var databaseUrl = "radios";
@@ -122,6 +127,7 @@ io.sockets.on('connection', function (socket) { // conexion
 
 	});
 		
+
 	socket.on('initRoom', function (data) {
 		console.log("Entro al chat");
 		socket.join(data.room);
@@ -131,11 +137,62 @@ io.sockets.on('connection', function (socket) { // conexion
 	  var collec = ['radios'];
 	  var db = require("mongojs").connect(databaseUrl, collec);
 	  var collection = db.collection('radios');
+
 	  db.radios.find({_id : ObjectID(id)},function(err, docs) {
 		// docs is an array of all the documents in mycollection
 			for (var i = 0; i < docs.length; i++) {
-				socket.broadcast.emit('emitirRadio', docs[i]);
-				//
+
+		// COMPRUEBA QUE LA DIRECCIÓN DE LA RADIO SEA ACCESIBLE POR EL PROTOCOLO HTTP
+				// = true;
+			
+
+				var dir = docs[i]['dirección'];
+				dir=dir.replace('http:','');
+			    dir=dir.replace('/','');
+			    dir=dir.replace('/','');
+			    dir=dir.replace('/','');
+				dir = dir.split(":");
+				var options = {
+				  host: dir[0],
+				  port: dir[1],
+				  path: '/'
+				};
+
+				
+				///d.on('error', function(err) {
+				
+				
+
+				//});
+
+
+	  			(function(){
+
+					var j = i;	  				
+
+					http.get(options, function(res) {
+						
+					  	console.log("Conección exitosa con: " + dir);
+					  	console.log("Docs[j]: " + docs[j]['dirección']);
+					  	socket.broadcast.emit('emitirRadio', docs[j]);	 	
+					}).on('error', function(e){
+						console.log("No ha podido conectar a: " + dir);
+						socket.broadcast.emit('emitirRadioERROR',{text: "ERROR"});
+			
+				  		
+					});
+
+				})();
+				
+
+			/*	if(coneccion = "OK"){
+					socket.broadcast.emit('emitirRadio', docs[i]);
+				};/*else if(coneccion = "FAIL"){
+					
+					socket.broadcast.emit('emitirRadioERROR',{text: "ERROR"});
+				}else{
+					console.log("Error inesperado!");
+				}; */
 
 			};
 

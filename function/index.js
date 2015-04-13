@@ -57,9 +57,17 @@ try {
 	});
 
 	socket.on('emitirRadio', function (data){
-
-
 		if($("#contenedorRadio").html()=="") $('#contenedorRadio').append('<audio controls src="'+ data['dirección']+'" id ="radioRep" type="audio/mpeg"></audio>');
+	});
+
+	socket.on('emitirRadioERROR', function (data){
+			if($("#contenedorRadio").html()=="")
+				{
+	
+					$('#contenedorRadio').append('<div class=" alert-danger">LA RADIO NO ESTA DISPONIBLE</div>');
+
+				}	
+
 	});
 
 	socket.on('actualizarFormulario', function (data){
