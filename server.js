@@ -145,7 +145,27 @@ io.sockets.on('connection', function (socket) { // conexion
 		// COMPRUEBA QUE LA DIRECCIÓN DE LA RADIO SEA ACCESIBLE POR EL PROTOCOLO HTTP
 				// = true;
 			
+				console.log(docs[i]['actualUser']);
+						  var id2 = docs[i]["_id"];
+						  var nombre = docs[i]["nombre"];
+						  var ip = docs[i]["dirección"];
+						  var numPar= docs[i]["maxUsers"];
+						  var actualUser =  docs[i]["actualUser"];
+						  actualUser = parseInt(actualUser)  + 1;
 
+						 // console.log(ObjectID(id2));
+						 
+						db.radios.update({_id: id2},
+								{"nombre": nombre , 
+								"dirección" : ip,
+								"maxUsers": numPar,
+								"actualUser": String(actualUser)},
+								 { upsert: true },
+								 function(err, updated){
+						        if( err || !updated ) console.log("No se ha podido guardar la radio");
+							  	else console.log("Radio modificada con éxito");
+					    // the update is complete
+						});
 				var dir = docs[i]['dirección'];
 				dir=dir.replace('http:','');
 			    dir=dir.replace('/','');
@@ -164,8 +184,11 @@ io.sockets.on('connection', function (socket) { // conexion
 				
 
 				//});
-
-
+				if(numPar < actualUser){
+					console.log("Número de usuarios maximo alcanzado");
+				    socket.broadcast.emit('maxUsuarios', {});
+				}
+				else
 	  			(function(){
 
 					var j = i;	  				
@@ -226,20 +249,63 @@ io.sockets.on('connection', function (socket) { // conexion
 			console.log("Usuario desconectado " + socket.username);
 			socket.leave();
 			var res =socket.username.split("#$%&");
+
+
+			console.log(res[0]);
+			var id = res[2];
+	  		var collec = ['radios'];
+			var db = require("mongojs").connect(databaseUrl, collec);
+			var collection = db.collection('radios');
 			var messaje = res[0]+ " ha salido a la sala de chat.";
 			var byeUser = usuariosOnline.indexOf(socket.username);
 			byeUser > -1 && usuariosOnline.splice( byeUser, 1 );
-
+			console.log(byeUser);
 			socket.broadcast.emit('salidaUsuario', { text:messaje, room: res[1]});
-			socket.broadcast.emit('updateUsers', usuariosOnline);
+			socket.broadcast.emit('updateUsers', usuariosOnline);	
+	  		db.radios.find({_id : ObjectID(id)},function(err, docs) {
+		// docs is an array of all the documents in mycollection
+			for (var i = 0; i < docs.length; i++) {
+
+				// COMPRUEBA QUE LA DIRECCIÓN DE LA RADIO SEA ACCESIBLE POR EL PROTOCOLO HTTP
+						// = true;
+					
+						console.log(docs[i]['actualUser']);
+						  var id2 = docs[i]["_id"];
+						  var nombre = docs[i]["nombre"];
+						  var ip = docs[i]["dirección"];
+						  var numPar= docs[i]["maxUsers"];
+						  var actualUser =  docs[i]["actualUser"];
+						  actualUser = parseInt(actualUser) -1 ;
+						 console.log(actualUser);
+								 // console.log(actualUser);
+ 
+						 if(actualUser >= 0){
+						 	 db.radios.update({_id: id2},
+								{"nombre": nombre , 
+								"dirección" : ip,
+								"maxUsers": numPar,
+								"actualUser": String(actualUser)},
+								 { upsert: true },
+								 function(err, updated){
+						        if( err || !updated ) console.log("No se ha podido guardar la radio");
+							  	else console.log("Radio modificada con éxito");
+					    // the update is complete
+						});
+
+						 }		 
+						
+
+					};
+
+			  });
 		}
 		else socket.leave();
 		
 	});
 		
 	socket.on('ingresoUser', function (data) {
-		socket.username = data.text +"#$%&" + data.room;
-		usuariosOnline.push(data.text +"#$%&" + data.room);
+		socket.username = data.text +"#$%&" + data.room + "#$%&" + data.id;
+		usuariosOnline.push(data.text +"#$%&" + data.room+ "#$%&" + data.id);
 		console.log("Ingreso el usuario: " + data.text);
 		var messaje = data.text+ " ha ingresado a la sala de chat ";
 		socket.broadcast.emit('ingresoUsuario', { text:messaje, room: data.room});

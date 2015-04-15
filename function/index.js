@@ -70,6 +70,13 @@ try {
 
 	});
 
+	socket.on('maxUsuarios', function (data){
+		if($("#contenedorRadio").html()=="")
+				{
+		$('#cuerpo').html("");
+		$('#cuerpo').append('<div class=" alert-danger">LA RADIO HA ALCANZADO LÍMITE DE USUARIOS</div>');
+		}
+	});
 	socket.on('actualizarFormulario', function (data){
 		$('#id2').val(data["_id"]);
 		$('#nombreRadio2').val(data["nombre"]);
@@ -96,7 +103,7 @@ $(function() {
 		socket.emit('initRoom', {room : room});
 		socket.emit('actualizarRadio', { text: x });
 		socket.emit('ingresoSala', {text:valor});
-		socket.emit('ingresoUser', {text: message, room:room});
+		socket.emit('ingresoUser', {text: message, room:room, id: x});
 	});
 
 	$('#btn-send').click(function() {
