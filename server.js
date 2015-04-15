@@ -154,7 +154,7 @@ io.sockets.on('connection', function (socket) { // conexion
 						  actualUser = parseInt(actualUser)  + 1;
 
 						 // console.log(ObjectID(id2));
-						 
+					/*	 
 						db.radios.update({_id: id2},
 								{"nombre": nombre , 
 								"dirección" : ip,
@@ -165,7 +165,7 @@ io.sockets.on('connection', function (socket) { // conexion
 						        if( err || !updated ) console.log("No se ha podido guardar la radio");
 							  	else console.log("Radio modificada con éxito");
 					    // the update is complete
-						});
+						});*/
 				var dir = docs[i]['dirección'];
 				dir=dir.replace('http:','');
 			    dir=dir.replace('/','');
@@ -178,7 +178,7 @@ io.sockets.on('connection', function (socket) { // conexion
 				  path: '/'
 				};
 
-				
+						
 				///d.on('error', function(err) {
 				
 				
@@ -194,7 +194,7 @@ io.sockets.on('connection', function (socket) { // conexion
 					var j = i;	  				
 
 					http.get(options, function(res) {
-						
+						docs[j]['dirección'] = "http://"+ dir[0]+ ":"+ dir[1];
 					  	console.log("Conección exitosa con: " + dir);
 					  	console.log("Docs[j]: " + docs[j]['dirección']);
 					  	socket.broadcast.emit('emitirRadio', docs[j]);	 	
@@ -280,7 +280,7 @@ io.sockets.on('connection', function (socket) { // conexion
 								 // console.log(actualUser);
  
 						 if(actualUser >= 0){
-						 	 db.radios.update({_id: id2},
+						 	 /*db.radios.update({_id: id2},
 								{"nombre": nombre , 
 								"dirección" : ip,
 								"maxUsers": numPar,
@@ -289,8 +289,8 @@ io.sockets.on('connection', function (socket) { // conexion
 								 function(err, updated){
 						        if( err || !updated ) console.log("No se ha podido guardar la radio");
 							  	else console.log("Radio modificada con éxito");
-					    // the update is complete
-						});
+					    // the update is complete*/
+					//	});
 
 						 }		 
 						

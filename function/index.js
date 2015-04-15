@@ -1,5 +1,5 @@
 //Función Javascript
-var serverIP = 'localhost';
+var serverIP = '10.42.0.59';
 var port = 3000;
 var users = new Array();
 var room = "";
@@ -12,11 +12,6 @@ try {
 	socket.on("updateUsers", function (data)
     {
         //limpiamos el sidebar donde almacenamos usuarios
-
-      
-       
-       
-   
        			$("#users").html("");
        			$("#users").append('<div class="alert alert-info" id="users">Usuarios conectados: <br></div>');
        			for (var i = 0 ; i < data.length; i++) {
@@ -57,7 +52,10 @@ try {
 	});
 
 	socket.on('emitirRadio', function (data){
-		if($("#contenedorRadio").html()=="") $('#contenedorRadio').append('<audio controls src="'+ data['dirección']+'" id ="radioRep" type="audio/mpeg"></audio>');
+		if($("#contenedorRadio").html()=="")
+		{
+			$('#contenedorRadio').append('<audio controls src="'+ data['dirección']+'" id ="radioRep" type="audio/mpeg"></audio>');
+		}
 	});
 
 	socket.on('emitirRadioERROR', function (data){
@@ -66,7 +64,7 @@ try {
 	
 					$('#contenedorRadio').append('<div class=" alert-danger">LA RADIO NO ESTA DISPONIBLE</div>');
 
-				}	
+			}	
 
 	});
 
