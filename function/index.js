@@ -1,5 +1,5 @@
 //Función Javascript
-var serverIP = '10.42.0.59';
+var serverIP = '192.168.1.38';
 var port = 3000;
 var users = new Array();
 var room = "";
